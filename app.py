@@ -162,40 +162,44 @@ elif selected_menu == "Edit Employee":
     st.markdown("---")
 
     all_employees = get_all_employees()
-    employee_names = [employee["full_name"] for employee in all_employees]
 
-    edit_employee_select = st.selectbox(
-        "**Select Employee to edit**", options=employee_names)
+    if all_employees:
+        employee_names = [employee["full_name"] for employee in all_employees]
+        edit_employee_select = st.selectbox(
+            "**Select Employee to edit**", options=employee_names)
+        st.markdown("---")
+        selected_employee = next(
+            employee for employee in all_employees if employee["full_name"] == edit_employee_select)
 
-    st.markdown("---")
-    selected_employee = next(
-        employee for employee in all_employees if employee["full_name"] == edit_employee_select)
+        if edit_employee_select:
+            full_name_edit = st.text_input(
+                "Full Name", placeholder="Full Name...", value=selected_employee["full_name"])
 
-    if edit_employee_select:
-        full_name_edit = st.text_input(
-            "Full Name", placeholder="Full Name...", value=selected_employee["full_name"])
+            email_edit = st.text_input(
+                "Email", placeholder="Email...", value=selected_employee["email"])
 
-        email_edit = st.text_input(
-            "Email", placeholder="Email...", value=selected_employee["email"])
-
-        if selected_employee["gender"] == "Male":
-            gender_edit = st.selectbox("Gender", options=["Male", "Female"])
-        else:
-            gender_edit = st.selectbox("Gender", options=["Female", "Male"])
-
-        job_title_edit = st.text_input(
-            "Job Title", placeholder="Job Title...", value=selected_employee["job_title"])
-
-        salary_edit = st.number_input(
-            "Salary", min_value=300.0, max_value=1000000.0, step=0.1, value=selected_employee["salary"])
-
-        if st.button("Update Employee"):
-            if full_name_edit and email_edit and gender_edit and job_title_edit and salary_edit:
-                new_employee = update_employee(employee_id=selected_employee["id"], full_name=full_name_edit, email=email_edit,
-                                               gender=gender_edit, job_title=job_title_edit, salary=salary_edit)
-                st.success(f"New employee added successfully!")
+            if selected_employee["gender"] == "Male":
+                gender_edit = st.selectbox(
+                    "Gender", options=["Male", "Female"])
             else:
-                st.error("All fields must be filled!")
+                gender_edit = st.selectbox(
+                    "Gender", options=["Female", "Male"])
+
+            job_title_edit = st.text_input(
+                "Job Title", placeholder="Job Title...", value=selected_employee["job_title"])
+
+            salary_edit = st.number_input(
+                "Salary", min_value=300.0, max_value=1000000.0, step=0.1, value=selected_employee["salary"])
+
+            if st.button("Update Employee"):
+                if full_name_edit and email_edit and gender_edit and job_title_edit and salary_edit:
+                    new_employee = update_employee(employee_id=selected_employee["id"], full_name=full_name_edit, email=email_edit,
+                                                   gender=gender_edit, job_title=job_title_edit, salary=salary_edit)
+                    st.success(f"New employee added successfully!")
+                else:
+                    st.error("All fields must be filled!")
+    else:
+        st.info("No employee in database")
 
 else:
     st.header("Delete Employee")
@@ -203,13 +207,16 @@ else:
     st.markdown("---")
 
     all_employees = get_all_employees()
-    employee_names = [employee["full_name"] for employee in all_employees]
-    employee_to_delete = st.selectbox(
-        "Select Employee to delete", employee_names)
-    if employee_to_delete:
-        selected_employee = next(
-            employee for employee in all_employees if employee["full_name"] == employee_to_delete)
+    if all_employees:
+        employee_names = [employee["full_name"] for employee in all_employees]
+        employee_to_delete = st.selectbox(
+            "Select Employee to delete", employee_names)
+        if employee_to_delete:
+            selected_employee = next(
+                employee for employee in all_employees if employee["full_name"] == employee_to_delete)
 
-        if st.button(f"Delete {selected_employee["full_name"]}"):
-            delete_employee(employee_id=selected_employee["id"])
-            st.success(f"Employee deleted successfully!")
+            if st.button(f"Delete {selected_employee["full_name"]}"):
+                delete_employee(employee_id=selected_employee["id"])
+                st.success(f"Employee deleted successfully!")
+    else:
+        st.info("No employee in database")
