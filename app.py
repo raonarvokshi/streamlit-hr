@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu as om
 import pandas as pd
 import requests
 
+st.set_page_config(page_title="Employee Managment")
 
 def display_metrics(df):
     col1, col2, col3, col4 = st.columns(4)
@@ -81,9 +82,6 @@ def delete_employee(employee_id):
         f"https://fastapi-hr.onrender.com/delete/employee/{employee_id}")
 
     return response.json()
-
-
-st.set_page_config(page_title="Employee Managment")
 
 
 with st.sidebar:
