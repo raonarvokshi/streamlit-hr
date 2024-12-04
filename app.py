@@ -83,6 +83,9 @@ def delete_employee(employee_id):
     return response.json()
 
 
+st.set_page_config(page_title="Employee Managment")
+
+
 with st.sidebar:
     st.title("Employee Managment")
     selected_menu = om(
